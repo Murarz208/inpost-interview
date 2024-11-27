@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="1" author="dg.maciej.murawski@gmail.com">
+        <createTable tableName="product">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="price_currency" type="VARCHAR(255)"/>
+            <column name="price_amount" type="DECIMAL(19, 2)"/>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="amount" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="2" author="dg.maciej.murawski@gmail.com">
+        <createTable tableName="discount_policy">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="product_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="discount_quantity" type="DECIMAL(19, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="products_count" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="3" author="dg.maciej.murawski@gmail.com">
+        <addUniqueConstraint columnNames="product_id, products_count"
+                             constraintName="UK_discount_policy_product_id_products_count" tableName="discount_policy"/>
+    </changeSet>
+
+    <changeSet id="4" author="dg.maciej.murawski@gmail.com" context="test">
+        <loadData
+                file="init/products.csv"
+                separator=";"
+                tableName="product">
+            <column name="id" type="UUID"/>
+            <column name="amount" type="BIGINT"/>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="price_amount" type="DECIMAL(19, 2)"/>
+            <column name="price_currency" type="VARCHAR(255)"/>
+        </loadData>
+    </changeSet>
+
+    <changeSet id="5" author="dg.maciej.murawski@gmail.com" context="test">
+        <loadData
+                file="init/discount_policies.csv"
+                separator=";"
+                tableName="discount_policy">
+
+            <column name="id" type="UUID"/>
+            <column name="product_id" type="UUID"/>
+            <column name="discount_quantity" type="DECIMAL(19, 2)"/>
+            <column name="products_count" type="BIGINT"/>
+            <column name="type" type="VARCHAR(255)"/>
+        </loadData>
+    </changeSet>
+
+</databaseChangeLog>
